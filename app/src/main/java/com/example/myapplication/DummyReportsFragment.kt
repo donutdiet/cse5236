@@ -31,4 +31,34 @@ class DummyReportsFragment : Fragment() {
         recyclerView.adapter = DummyReportAdapter(dummyReports)
         return view
     }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d(dummyReportsFragTag, "onStart")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(dummyReportsFragTag, "onResume")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(dummyReportsFragTag, "onPause")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(dummyReportsFragTag, "onStop")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d(dummyReportsFragTag, "onDestroyView")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(dummyReportsFragTag, "onDestroy")
+    }
 }
