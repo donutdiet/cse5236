@@ -1,6 +1,7 @@
 package com.example.myapplication
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import android.widget.EditText
 import androidx.recyclerview.widget.RecyclerView
 
 class ReportFragment : Fragment() {
+    private val reportFragTag = "ReportFragment"
     private val reports = mutableListOf<DummyReport>()
     private lateinit var adapter: DummyReportAdapter
 
@@ -43,5 +45,34 @@ class ReportFragment : Fragment() {
             contactText.text.clear()
         }
         return view
+    }
+    override fun onStart() {
+        super.onStart()
+        Log.d(reportFragTag, "onStart")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(reportFragTag, "onResume")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(reportFragTag, "onPause")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(reportFragTag, "onStop")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d(reportFragTag, "onDestroyView")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(reportFragTag, "onDestroy")
     }
 }

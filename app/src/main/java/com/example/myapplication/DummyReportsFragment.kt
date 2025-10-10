@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 class DummyReportsFragment : Fragment() {
     private val dummyReportsFragTag = "DummyReportsFragment"
+    private val dummyReportFragTag = "ReportFragment"
 
     private val dummyReports = listOf(
         DummyReport("Lost Dog", "Brown Labrador lost near Central Park."),
@@ -30,5 +31,35 @@ class DummyReportsFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = DummyReportAdapter(dummyReports)
         return view
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d(dummyReportFragTag, "onStart")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(dummyReportFragTag, "onResume")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(dummyReportFragTag, "onPause")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(dummyReportFragTag, "onStop")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d(dummyReportFragTag, "onDestroyView")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(dummyReportFragTag, "onDestroy")
     }
 }
