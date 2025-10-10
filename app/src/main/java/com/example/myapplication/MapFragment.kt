@@ -14,13 +14,12 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 
 class MapFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var mapView: MapView
     private var googleMap: GoogleMap? = null
-    private val TAG = "MapFragment"
+    private val mapFragTag = "MapFragment"
 
     companion object {
         private const val MAPVIEW_BUNDLE_KEY = "MapViewBundleKey"
@@ -28,7 +27,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "onCreate")
+        Log.d(mapFragTag, "onCreate")
     }
 
     override fun onCreateView(
@@ -36,7 +35,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d(TAG, "onCreateView")
+        Log.d(mapFragTag, "onCreateView")
 
         val view = inflater.inflate(R.layout.fragment_map, container, false)
         mapView = view.findViewById(R.id.map_view)
@@ -79,31 +78,31 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onStart() {
         super.onStart()
-        Log.d(TAG, "onStart")
+        Log.d(mapFragTag, "onStart")
     }
 
     override fun onResume() {
         super.onResume()
-        Log.d(TAG, "onResume")
+        Log.d(mapFragTag, "onResume")
     }
 
     override fun onPause() {
         super.onPause()
-        Log.d(TAG, "onPause")
+        Log.d(mapFragTag, "onPause")
     }
 
     override fun onStop() {
         super.onStop()
-        Log.d(TAG, "onStop")
+        Log.d(mapFragTag, "onStop")
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        Log.d(TAG, "onDestroyView")
+        Log.d(mapFragTag, "onDestroyView")
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d(TAG, "onDestroy")
+        Log.d(mapFragTag, "onDestroy")
     }
 }

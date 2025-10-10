@@ -1,55 +1,47 @@
 package com.example.myapplication
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import android.widget.Button
+import android.widget.EditText
+import androidx.recyclerview.widget.RecyclerView
 
 class ReportFragment : Fragment() {
-    private val TAG = "ReportFragment"
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.d(TAG, "onCreate")
-    }
+    private val reports = mutableListOf<DummyReport>()
+    private lateinit var adapter: DummyReportAdapter
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d(TAG, "onCreateView")
-        return inflater.inflate(R.layout.fragment_report, container, false)
-    }
+        val view = inflater.inflate(R.layout.fragment_report, container, false)
+        val recyclerView = view.findViewById<RecyclerView>(R.id.reportRecyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(activity)
+        adapter = DummyReportAdapter(reports)
+        recyclerView.adapter = adapter
 
-    override fun onStart() {
-        super.onStart()
-        Log.d(TAG, "onStart")
-    }
+        val petNameText = view.findViewById<EditText>(R.id.petNameEditText)
+        val petTypeText = view.findViewById<EditText>(R.id.petTypeEditText)
+        val lastSeenText = view.findViewById<EditText>(R.id.lastSeenEditText)
+        val contactText = view.findViewById<EditText>(R.id.contactEditText)
+        val submitButton = view.findViewById<Button>(R.id.submitButton)
 
-    override fun onResume() {
-        super.onResume()
-        Log.d(TAG, "onResume")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Log.d(TAG, "onPause")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.d(TAG, "onStop")
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        Log.d(TAG, "onDestroyView")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d(TAG, "onDestroy")
+        submitButton.setOnClickListener {
+            val title = petNameText.text.toString()
+            val description = "Type: ${petTypeText.text}, Last Seen: ${lastSeenText.text}, Contact: ${contactText.text}"
+            reports.add(DummyReport(title, description))
+            adapter.notifyItemInserted(reports.size - 1)
+            recyclerView.scrollToPosition(reports.size - 1)
+            petNameText.text.clear()
+            petTypeText.text.clear()
+            lastSeenText.text.clear()
+            contactText.text.clear()
+        }
+        return view
     }
 }
