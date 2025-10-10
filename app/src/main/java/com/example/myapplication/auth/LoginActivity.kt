@@ -1,39 +1,54 @@
 package com.example.myapplication.auth
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.myapplication.MainActivity
 import com.example.myapplication.R
 import com.google.firebase.auth.FirebaseAuth
 
 class LoginActivity : AppCompatActivity() {
-    private lateinit var auth: FirebaseAuth
     private val AUTH_TAG = "Auth"
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_login)
+
         auth = FirebaseAuth.getInstance()
 
-        val email = "user@example.com"
-        val password = "password"
+        val emailField = findViewById<EditText>(R.id.emailEditText)
+        val passwordField = findViewById<EditText>(R.id.passwordEditText)
+        val loginButton = findViewById<Button>(R.id.loginButton)
+        val registerLink = findViewById<TextView>(R.id.registerLink)
 
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener { signUp ->
-                if (signUp.isSuccessful) {
-                    Log.d(AUTH_TAG, "Sign up successful: ${auth.currentUser?.email}")
-                } else {
-                    Log.e(AUTH_TAG, "Sign up failed", signUp.exception)
-                }
-            }
+        loginButton.setOnClickListener {
+            val email = emailField.text.toString().trim()
+            val password = passwordField.text.toString().trim()
 
-        auth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener { signIn ->
-                if (signIn.isSuccessful) {
-                    Log.d(AUTH_TAG, "Sign in successful: ${auth.currentUser?.email}")
-                } else {
-                    Log.e(AUTH_TAG, "Sign in failed", signIn.exception)
-                }
+            if (email.isNotEmpty() && password.isNotEmpty()) {
+                auth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            startActivity(Intent(this, MainActivity::class.java))
+                            finish()
+                        } else {
+                            Toast.makeText(this, "Login failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+            } else {
+                Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        registerLink.setOnClickListener {
+            Log.d(AUTH_TAG, "Register link clicked")
+            startActivity(Intent(this, MainActivity::class.java))
+        }
     }
 }
