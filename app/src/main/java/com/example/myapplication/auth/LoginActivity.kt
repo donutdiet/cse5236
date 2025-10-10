@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.MainActivity
 import com.example.myapplication.R
+import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 
 class LoginActivity : AppCompatActivity() {
@@ -18,6 +19,15 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        FirebaseApp.initializeApp(this)
+
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user != null) {
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+            return
+        }
+
         setContentView(R.layout.activity_login)
 
         auth = FirebaseAuth.getInstance()
@@ -33,12 +43,12 @@ class LoginActivity : AppCompatActivity() {
 
             if (email.isNotEmpty() && password.isNotEmpty()) {
                 auth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
+                    .addOnCompleteListener { signIn ->
+                        if (signIn.isSuccessful) {
                             startActivity(Intent(this, MainActivity::class.java))
                             finish()
                         } else {
-                            Toast.makeText(this, "Login failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, "Login failed: ${signIn.exception?.message}", Toast.LENGTH_SHORT).show()
                         }
                     }
             } else {

@@ -8,13 +8,11 @@ import com.example.myapplication.profile.ProfileFragment
 import com.example.myapplication.reports.DummyReportsFragment
 import com.example.myapplication.reports.ReportFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.FirebaseApp
 
 class MainActivity : AppCompatActivity() {
     val mainActTag = "MainActivity"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        FirebaseApp.initializeApp(this)
         Log.d(mainActTag, "onCreate")
 
         setContentView(R.layout.activity_main)
