@@ -24,6 +24,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_map -> replaceFragment(MapFragment())
                 R.id.nav_report -> replaceFragment(ReportFragment())
                 R.id.nav_profile -> replaceFragment(ProfileFragment())
+                R.id.nav_dummy -> replaceFragment(DummyReportsFragment())
             }
             true
         }
