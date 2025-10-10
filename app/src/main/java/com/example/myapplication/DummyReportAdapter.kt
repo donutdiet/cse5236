@@ -1,14 +1,13 @@
+package com.example.myapplication
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myapplication.DummyReport
-import com.example.myapplication.R
 
 class DummyReportAdapter(private val reports: List<DummyReport>) :
     RecyclerView.Adapter<DummyReportAdapter.ViewHolder>() {
-
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val titleText: TextView = itemView.findViewById(R.id.reportTitle)
         val descriptionText: TextView = itemView.findViewById(R.id.reportDescription)

@@ -1,8 +1,6 @@
 package com.example.myapplication
 
-import DummyReportAdapter
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,48 +11,37 @@ import android.widget.EditText
 import androidx.recyclerview.widget.RecyclerView
 
 class ReportFragment : Fragment() {
-
-    private val TAG = "ReportFragment"
     private val reports = mutableListOf<DummyReport>()
     private lateinit var adapter: DummyReportAdapter
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_report, container, false)
-
-        // Setup RecyclerView
         val recyclerView = view.findViewById<RecyclerView>(R.id.reportRecyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.layoutManager = LinearLayoutManager(activity)
         adapter = DummyReportAdapter(reports)
         recyclerView.adapter = adapter
 
-        // Setup form
-        val petNameEditText = view.findViewById<EditText>(R.id.petNameEditText)
-        val petTypeEditText = view.findViewById<EditText>(R.id.petTypeEditText)
-        val lastSeenEditText = view.findViewById<EditText>(R.id.lastSeenEditText)
-        val contactEditText = view.findViewById<EditText>(R.id.contactEditText)
+        val petNameText = view.findViewById<EditText>(R.id.petNameEditText)
+        val petTypeText = view.findViewById<EditText>(R.id.petTypeEditText)
+        val lastSeenText = view.findViewById<EditText>(R.id.lastSeenEditText)
+        val contactText = view.findViewById<EditText>(R.id.contactEditText)
         val submitButton = view.findViewById<Button>(R.id.submitButton)
 
         submitButton.setOnClickListener {
-            val title = petNameEditText.text.toString().ifEmpty { "Unnamed Pet" }
-            val description = "Type: ${petTypeEditText.text}, Last Seen: ${lastSeenEditText.text}, Contact: ${contactEditText.text}"
-
-            // Add new report to list
+            val title = petNameText.text.toString()
+            val description = "Type: ${petTypeText.text}, Last Seen: ${lastSeenText.text}, Contact: ${contactText.text}"
             reports.add(DummyReport(title, description))
             adapter.notifyItemInserted(reports.size - 1)
-
-            // Clear form
-            petNameEditText.text.clear()
-            petTypeEditText.text.clear()
-            lastSeenEditText.text.clear()
-            contactEditText.text.clear()
-
-            // Scroll to the newly added item
             recyclerView.scrollToPosition(reports.size - 1)
+            petNameText.text.clear()
+            petTypeText.text.clear()
+            lastSeenText.text.clear()
+            contactText.text.clear()
         }
-
         return view
     }
 }

@@ -8,48 +8,49 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
 class ProfileFragment : Fragment() {
-    private val TAG = "ProfileFragment"
+    private val profileFragTag = "ProfileFragment"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "onCreate")
+        Log.d(profileFragTag, "onCreate")
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d(TAG, "onCreateView")
+        Log.d(profileFragTag, "onCreateView")
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
     override fun onStart() {
         super.onStart()
-        Log.d(TAG, "onStart")
+        Log.d(profileFragTag, "onStart")
     }
 
     override fun onResume() {
         super.onResume()
-        Log.d(TAG, "onResume")
+        Log.d(profileFragTag, "onResume")
     }
 
     override fun onPause() {
         super.onPause()
-        Log.d(TAG, "onPause")
+        Log.d(profileFragTag, "onPause")
     }
 
     override fun onStop() {
         super.onStop()
-        Log.d(TAG, "onStop")
+        Log.d(profileFragTag, "onStop")
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        Log.d(TAG, "onDestroyView")
+        Log.d(profileFragTag, "onDestroyView")
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d(TAG, "onDestroy")
+        Log.d(profileFragTag, "onDestroy")
     }
 }

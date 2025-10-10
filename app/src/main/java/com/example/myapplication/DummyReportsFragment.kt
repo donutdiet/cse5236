@@ -1,6 +1,5 @@
 package com.example.myapplication
 
-import DummyReportAdapter
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class DummyReportsFragment : Fragment() {
-    private val TAG = "DummyReportsFragment"
+    private val dummyReportsFragTag = "DummyReportsFragment"
 
     private val dummyReports = listOf(
         DummyReport("Lost Dog", "Brown Labrador lost near Central Park."),
@@ -26,12 +25,10 @@ class DummyReportsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_dummy_reports, container, false)
-        Log.d(TAG, "onCreateView")
-
+        Log.d(dummyReportsFragTag, "onCreateView")
         val recyclerView = view.findViewById<RecyclerView>(R.id.dummyRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = DummyReportAdapter(dummyReports)
-
         return view
     }
 }
