@@ -1,10 +1,11 @@
-package com.example.myapplication
+package com.example.myapplication.reports
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.myapplication.R
 
 class DummyReportAdapter(private val reports: List<DummyReport>) :
     RecyclerView.Adapter<DummyReportAdapter.ViewHolder>() {

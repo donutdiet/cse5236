@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.myapplication.reports
 
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.myapplication.R
 
 class DummyReportsFragment : Fragment() {
     private val dummyReportsFragTag = "DummyReportsFragment"
