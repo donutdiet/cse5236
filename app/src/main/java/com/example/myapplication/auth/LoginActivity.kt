@@ -58,7 +58,7 @@ class LoginActivity : AppCompatActivity() {
 
         registerLink.setOnClickListener {
             Log.d(AUTH_TAG, "Register link clicked")
-            startActivity(Intent(this, MainActivity::class.java))
+            Toast.makeText(this, "Register not implemented yet", Toast.LENGTH_SHORT).show()
         }
     }
 }
