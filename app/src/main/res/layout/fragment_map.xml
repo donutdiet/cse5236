@@ -6,8 +6,8 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/report_text"
-        android:text="Report Lost Pet"
+        android:id="@+id/map_text"
+        android:text="Map"
         android:textSize="14sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

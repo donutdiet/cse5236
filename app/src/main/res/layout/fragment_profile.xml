@@ -6,9 +6,9 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/trackText"
-        android:text="Track Lost Pets"
-        android:textSize="24sp"
+        android:id="@+id/profile_text"
+        android:text="Profile"
+        android:textSize="14sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
