@@ -3,6 +3,10 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.example.myapplication.map.MapFragment
+import com.example.myapplication.profile.ProfileFragment
+import com.example.myapplication.reports.DummyReportsFragment
+import com.example.myapplication.reports.ReportFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -10,8 +14,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(mainActTag, "onCreate")
+
         setContentView(R.layout.activity_main)
         currentFragment(MapFragment())
+
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav)
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {

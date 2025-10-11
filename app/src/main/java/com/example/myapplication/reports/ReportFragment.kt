@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.myapplication.reports
 
 import android.os.Bundle
 import android.util.Log
@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import android.widget.Button
 import android.widget.EditText
 import androidx.recyclerview.widget.RecyclerView
+import com.example.myapplication.R
 
 class ReportFragment : Fragment() {
     private val reportFragTag = "ReportFragment"
