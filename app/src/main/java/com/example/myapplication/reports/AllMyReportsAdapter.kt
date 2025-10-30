@@ -7,8 +7,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 
-class DummyReportAdapter(private val reports: List<DummyReport>) :
-    RecyclerView.Adapter<DummyReportAdapter.ViewHolder>() {
+class AllMyReportsAdapter(private var reports: MutableList<Report>) :
+    RecyclerView.Adapter<AllMyReportsAdapter.ViewHolder>() {
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val titleText: TextView = itemView.findViewById(R.id.reportTitle)
         val descriptionText: TextView = itemView.findViewById(R.id.reportDescription)
@@ -16,15 +16,20 @@ class DummyReportAdapter(private val reports: List<DummyReport>) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_dummy_report, parent, false)
+            .inflate(R.layout.item_report, parent, false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val report = reports[position]
-        holder.titleText.text = report.title
-        holder.descriptionText.text = report.description
+        holder.titleText.text = report.petName
+        holder.descriptionText.text = "Type: ${report.petType}, Last Seen: ${report.lastSeen}, Contact: ${report.contact}"
     }
 
     override fun getItemCount(): Int = reports.size
+
+    fun updateReports(newReports: MutableList<Report>) {
+        reports = newReports
+        notifyDataSetChanged()
+    }
 }

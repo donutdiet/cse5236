@@ -11,12 +11,16 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
+import androidx.lifecycle.ViewModelProvider
+import com.example.myapplication.viewmodel.ReportsViewModel
 
 class ReportFragment : Fragment() {
     private val reportFragTag = "ReportFragment"
-    private val reports = mutableListOf<DummyReport>()
-    private lateinit var adapter: DummyReportAdapter
+    private val myReports = mutableListOf<Report>()
+    private lateinit var adapter: AllMyReportsAdapter
+    private lateinit var viewModel: ReportsViewModel
 
+    private val currentUserId = "user123" // Placeholder for the current user's ID
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -25,9 +29,14 @@ class ReportFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_report, container, false)
         val recyclerView = view.findViewById<RecyclerView>(R.id.reportRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(activity)
-        adapter = DummyReportAdapter(reports)
+        val userReports = myReports.filter { it.userId == currentUserId }.toMutableList()
+        adapter = AllMyReportsAdapter(userReports)
         recyclerView.adapter = adapter
-
+        viewModel = ViewModelProvider(this)[ReportsViewModel::class.java]
+        viewModel.getUserReports(currentUserId).observe(viewLifecycleOwner) { reports ->
+            adapter.updateReports(reports.toMutableList())
+            recyclerView.scrollToPosition(adapter.itemCount - 1)
+        }
         val petNameText = view.findViewById<EditText>(R.id.petNameEditText)
         val petTypeText = view.findViewById<EditText>(R.id.petTypeEditText)
         val lastSeenText = view.findViewById<EditText>(R.id.lastSeenEditText)
@@ -35,11 +44,14 @@ class ReportFragment : Fragment() {
         val submitButton = view.findViewById<Button>(R.id.submitButton)
 
         submitButton.setOnClickListener {
-            val title = petNameText.text.toString()
-            val description = "Type: ${petTypeText.text}, Last Seen: ${lastSeenText.text}, Contact: ${contactText.text}"
-            reports.add(DummyReport(title, description))
-            adapter.notifyItemInserted(reports.size - 1)
-            recyclerView.scrollToPosition(reports.size - 1)
+            val report = Report(
+                petName = petNameText.text.toString(),
+                petType = petTypeText.text.toString(),
+                lastSeen = lastSeenText.text.toString(),
+                contact = contactText.text.toString(),
+                userId = currentUserId
+            )
+            viewModel.addReport(report)
             petNameText.text.clear()
             petTypeText.text.clear()
             lastSeenText.text.clear()
@@ -47,6 +59,7 @@ class ReportFragment : Fragment() {
         }
         return view
     }
+
     override fun onStart() {
         super.onStart()
         Log.d(reportFragTag, "onStart")

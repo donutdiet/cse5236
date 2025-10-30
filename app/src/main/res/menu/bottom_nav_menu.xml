@@ -14,7 +14,7 @@
         android:title="Profile" />
 
     <item
-        android:id="@+id/nav_dummy"
-        android:title="Dummy Reports"
+        android:id="@+id/nav_allReports"
+        android:title="All Reports"
         android:icon="@android:drawable/ic_menu_add"/>
 </menu>

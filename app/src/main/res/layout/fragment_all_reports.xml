@@ -6,8 +6,8 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/dummyTitle"
-        android:text="Dummy Reports"
+        android:id="@+id/allReportsTitle"
+        android:text="All Reports"
         android:textSize="18sp"
         android:textStyle="bold"
         android:layout_gravity="center_horizontal"
@@ -16,7 +16,7 @@
         android:layout_marginBottom="16dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/dummyRecyclerView"
+        android:id="@+id/allReportsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 </LinearLayout>
