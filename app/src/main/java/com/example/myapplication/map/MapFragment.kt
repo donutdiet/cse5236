@@ -39,7 +39,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         Log.d(mapFragTag, "onCreateView")
 
         val view = inflater.inflate(R.layout.fragment_map, container, false)
-        mapView = view.findViewById(R.id.map_view)
+        mapView = view.findViewById(R.id.mapView)
 
         var mapViewBundle: Bundle? = null
         if (savedInstanceState != null) {
