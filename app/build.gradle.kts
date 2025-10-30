@@ -58,6 +58,11 @@ dependencies {
     implementation(libs.play.services.maps)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
+    implementation(platform("com.google.firebase:firebase-bom:34.4.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

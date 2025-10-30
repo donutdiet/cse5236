@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.myapplication.map.MapFragment
 import com.example.myapplication.profile.ProfileFragment
-import com.example.myapplication.reports.DummyReportsFragment
+import com.example.myapplication.reports.AllReportsFragment
 import com.example.myapplication.reports.ReportFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_map -> currentFragment(MapFragment())
                 R.id.nav_report -> currentFragment(ReportFragment())
                 R.id.nav_profile -> currentFragment(ProfileFragment())
-                R.id.nav_dummy -> currentFragment(DummyReportsFragment())
+                R.id.nav_allReports -> currentFragment(AllReportsFragment())
             }
             true
         }
