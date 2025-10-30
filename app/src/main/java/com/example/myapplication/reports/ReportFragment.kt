@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import androidx.lifecycle.ViewModelProvider
 import com.example.myapplication.viewmodel.ReportsViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.GeoPoint
 
 class ReportFragment : Fragment() {
     private val reportFragTag = "ReportFragment"
@@ -20,7 +22,6 @@ class ReportFragment : Fragment() {
     private lateinit var adapter: AllMyReportsAdapter
     private lateinit var viewModel: ReportsViewModel
 
-    private val currentUserId = "user123" // Placeholder for the current user's ID
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -29,6 +30,10 @@ class ReportFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_report, container, false)
         val recyclerView = view.findViewById<RecyclerView>(R.id.reportRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(activity)
+
+        val user = FirebaseAuth.getInstance().currentUser
+        val currentUserId = user?.uid ?: ""
+
         val userReports = myReports.filter { it.userId == currentUserId }.toMutableList()
         adapter = AllMyReportsAdapter(userReports)
         recyclerView.adapter = adapter
@@ -39,22 +44,31 @@ class ReportFragment : Fragment() {
         }
         val petNameText = view.findViewById<EditText>(R.id.petNameEditText)
         val petTypeText = view.findViewById<EditText>(R.id.petTypeEditText)
-        val lastSeenText = view.findViewById<EditText>(R.id.lastSeenEditText)
+        val latitudeText = view.findViewById<EditText>(R.id.latitudeEditText)
+        val longitudeText = view.findViewById<EditText>(R.id.longitudeEditText)
         val contactText = view.findViewById<EditText>(R.id.contactEditText)
         val submitButton = view.findViewById<Button>(R.id.submitButton)
 
         submitButton.setOnClickListener {
+            val lat = latitudeText.text.toString().toDoubleOrNull()
+            val lon = longitudeText.text.toString().toDoubleOrNull()
+            var geoPoint: GeoPoint? = null
+            if (lat != null && lon != null) {
+                geoPoint = GeoPoint(lat, lon)
+            }
+
             val report = Report(
                 petName = petNameText.text.toString(),
                 petType = petTypeText.text.toString(),
-                lastSeen = lastSeenText.text.toString(),
+                lastSeen = geoPoint,
                 contact = contactText.text.toString(),
                 userId = currentUserId
             )
             viewModel.addReport(report)
             petNameText.text.clear()
             petTypeText.text.clear()
-            lastSeenText.text.clear()
+            latitudeText.text.clear()
+            longitudeText.text.clear()
             contactText.text.clear()
         }
         return view

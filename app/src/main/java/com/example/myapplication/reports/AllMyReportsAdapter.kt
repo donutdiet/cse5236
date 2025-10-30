@@ -23,7 +23,8 @@ class AllMyReportsAdapter(private var reports: MutableList<Report>) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val report = reports[position]
         holder.titleText.text = report.petName
-        holder.descriptionText.text = "Type: ${report.petType}, Last Seen: ${report.lastSeen}, Contact: ${report.contact}"
+        val lastSeenString = report.lastSeen?.let { "Lat: ${it.latitude}, Lon: ${it.longitude}" } ?: "Not available"
+        holder.descriptionText.text = "Type: ${report.petType}, Last Seen: $lastSeenString, Contact: ${report.contact}"
     }
 
     override fun getItemCount(): Int = reports.size

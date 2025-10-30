@@ -27,8 +27,16 @@
         android:layout_height="wrap_content"/>
 
     <EditText
-        android:id="@+id/lastSeenEditText"
-        android:hint="Last Seen Location"
+        android:id="@+id/latitudeEditText"
+        android:hint="Latitude"
+        android:inputType="numberDecimal|numberSigned"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <EditText
+        android:id="@+id/longitudeEditText"
+        android:hint="Longitude"
+        android:inputType="numberDecimal|numberSigned"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
