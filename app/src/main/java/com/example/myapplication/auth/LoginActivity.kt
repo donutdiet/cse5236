@@ -36,29 +36,40 @@ class LoginActivity : AppCompatActivity() {
         val passwordField = findViewById<EditText>(R.id.passwordEditText)
         val loginButton = findViewById<Button>(R.id.loginButton)
         val registerLink = findViewById<TextView>(R.id.registerLink)
+        var isRegisterMode = false
 
         loginButton.setOnClickListener {
             val email = emailField.text.toString().trim()
             val password = passwordField.text.toString().trim()
 
             if (email.isNotEmpty() && password.isNotEmpty()) {
-                auth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener { signIn ->
-                        if (signIn.isSuccessful) {
-                            startActivity(Intent(this, MainActivity::class.java))
-                            finish()
-                        } else {
-                            Toast.makeText(this, "Login failed: ${signIn.exception?.message}", Toast.LENGTH_SHORT).show()
-                        }
+                val task = if (isRegisterMode)
+                    auth.createUserWithEmailAndPassword(email, password)
+                else
+                    auth.signInWithEmailAndPassword(email, password)
+
+                task.addOnCompleteListener { result ->
+                    if (result.isSuccessful) {
+                        startActivity(Intent(this, MainActivity::class.java))
+                        finish()
+                    } else {
+                        Toast.makeText(this, result.exception?.message, Toast.LENGTH_SHORT).show()
                     }
+                }
             } else {
                 Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show()
             }
         }
 
         registerLink.setOnClickListener {
-            Log.d(AUTH_TAG, "Register link clicked")
-            Toast.makeText(this, "Register not implemented yet", Toast.LENGTH_SHORT).show()
+            isRegisterMode = !isRegisterMode
+            if (isRegisterMode) {
+                loginButton.text = "Register"
+                registerLink.text = "Already have an account? Login"
+            } else {
+                loginButton.text = "Log In"
+                registerLink.text = "Don't have an account? Register"
+            }
         }
     }
 }
