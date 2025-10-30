@@ -32,27 +32,33 @@ class ProfileFragment : Fragment() {
         val emailTextView = view.findViewById<TextView>(R.id.emailTextView)
         val uidTextView = view.findViewById<TextView>(R.id.uidTextView)
         val logoutButton = view.findViewById<Button>(R.id.logoutButton)
+        var isShowingUID = false
 
-        // ✅ Get current user
         val user = FirebaseAuth.getInstance().currentUser
 
         if (user != null) {
             emailTextView.text = "Email: ${user.email}"
-            uidTextView.text = "UID: ${user.uid}"
+            uidTextView.text = "Tap to show UID"
+
+            uidTextView.setOnClickListener {
+                isShowingUID = !isShowingUID
+                if (isShowingUID) {
+                    uidTextView.text = "UID: ${user.uid}"
+                } else {
+                    uidTextView.text = "Tap to show UID"
+                }
+            }
         } else {
             emailTextView.text = "Not logged in"
             uidTextView.text = ""
         }
 
-        // 🚪 Log out button
         logoutButton.setOnClickListener {
             FirebaseAuth.getInstance().signOut()
             val intent = Intent(requireContext(), LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
         }
-
-        return view
 
         return view
     }
