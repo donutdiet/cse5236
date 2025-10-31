@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
@@ -32,10 +33,11 @@ class ReportFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_report, container, false)
         val recyclerView = view.findViewById<RecyclerView>(R.id.reportRecyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(activity)
 
         val user = FirebaseAuth.getInstance().currentUser
         val currentUserId = user?.uid ?: ""
+
+        recyclerView.layoutManager = LinearLayoutManager(activity)
 
         val userReports = myReports.filter { it.userId == currentUserId }.toMutableList()
         adapter = AllMyReportsAdapter(userReports)
@@ -44,6 +46,7 @@ class ReportFragment : Fragment() {
             adapter.updateReports(reports.toMutableList())
             recyclerView.scrollToPosition(adapter.itemCount - 1)
         }
+
         val petNameText = view.findViewById<EditText>(R.id.petNameEditText)
         val petTypeText = view.findViewById<EditText>(R.id.petTypeEditText)
         val latitudeText = view.findViewById<EditText>(R.id.latitudeEditText)
@@ -66,7 +69,7 @@ class ReportFragment : Fragment() {
                 )
                 viewModel.addReport(report)
 
-                Toast.makeText(requireContext(), "Report submitted successfully for ${petNameText}!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Report submitted successfully for ${petNameText.text}!", Toast.LENGTH_SHORT).show()
 
                 petNameText.text.clear()
                 petTypeText.text.clear()
