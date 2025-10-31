@@ -26,7 +26,6 @@ class AllReportsFragment : Fragment() {
         adapter = AllMyReportsAdapter(mutableListOf())
         recyclerView.adapter = adapter
 
-        //viewModel = ViewModelProvider(this)[ReportsViewModel::class.java]
         viewModel.getAllReports().observe(viewLifecycleOwner) { reports ->
             adapter.updateReports(reports.toMutableList())
         }

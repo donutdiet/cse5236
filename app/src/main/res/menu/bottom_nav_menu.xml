@@ -7,14 +7,13 @@
     <item
         android:id="@+id/nav_report"
         android:icon="@android:drawable/ic_menu_add"
-        android:title="Report" />
+        android:title="New Report" />
+    <item
+        android:id="@+id/nav_allReports"
+        android:icon="@android:drawable/ic_menu_agenda"
+        android:title="All Reports" />
     <item
         android:id="@+id/nav_profile"
         android:icon="@android:drawable/ic_menu_info_details"
         android:title="Profile" />
-
-    <item
-        android:id="@+id/nav_allReports"
-        android:title="All Reports"
-        android:icon="@android:drawable/ic_menu_add"/>
 </menu>

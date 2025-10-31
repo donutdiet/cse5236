@@ -22,10 +22,24 @@ class AllMyReportsAdapter(private var reports: MutableList<Report>) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val report = reports[position]
-        holder.titleText.text = report.petName
-        val lastSeenString = report.lastSeen?.let { "Lat: ${it.latitude}, Lon: ${it.longitude}" } ?: "Not available"
-        holder.descriptionText.text = "Type: ${report.petType}, Last Seen: $lastSeenString, Contact: ${report.contact}"
+
+        val dateString = report.timestamp?.let {
+            android.text.format.DateFormat.format("MMM dd, yyyy h:mm a", it).toString()
+        } ?: "Unknown time"
+
+        val lastSeenString = report.lastSeen?.let {
+            "(${String.format("%.4f", it.latitude)}, ${String.format("%.4f", it.longitude)})"
+        } ?: "Not available"
+
+        holder.titleText.text = "Missing ${report.petType.ifBlank { "Pet" }}: ${report.petName.ifBlank { "Unnamed" }}"
+
+        holder.descriptionText.text = """
+        Last Seen: $lastSeenString
+        Contact: ${report.contact.ifBlank { "No contact info" }}
+        Reported: $dateString
+    """.trimIndent()
     }
+
 
     override fun getItemCount(): Int = reports.size
 

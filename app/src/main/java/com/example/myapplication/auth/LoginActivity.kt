@@ -32,6 +32,7 @@ class LoginActivity : AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance()
 
+        val formTitle = findViewById<TextView>(R.id.titleText)
         val emailField = findViewById<EditText>(R.id.emailEditText)
         val passwordField = findViewById<EditText>(R.id.passwordEditText)
         val loginButton = findViewById<Button>(R.id.loginButton)
@@ -64,9 +65,11 @@ class LoginActivity : AppCompatActivity() {
         registerLink.setOnClickListener {
             isRegisterMode = !isRegisterMode
             if (isRegisterMode) {
+                formTitle.text = "Register"
                 loginButton.text = "Register"
                 registerLink.text = "Already have an account? Login"
             } else {
+                formTitle.text = "Login"
                 loginButton.text = "Log In"
                 registerLink.text = "Don't have an account? Register"
             }
