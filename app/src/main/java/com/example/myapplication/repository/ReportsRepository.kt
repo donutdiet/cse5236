@@ -51,6 +51,28 @@ class ReportsRepository {
         return liveData
     }
 
+    fun getReportById(reportId: String): MutableLiveData<Report?> {
+        val liveData = MutableLiveData<Report?>()
+        reportsCollection
+            .document(reportId)
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.e("ReportsRepository", "Error fetching report $reportId", e)
+                    liveData.value = null
+                    return@addSnapshotListener
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    val report = snapshot.toObject(Report::class.java)
+                    report?.id = snapshot.id
+                    liveData.value = report
+                } else {
+                    liveData.value = null
+                }
+            }
+        return liveData
+    }
+
     fun addReport(report: Report) {
         reportsCollection.add(report)
     }
