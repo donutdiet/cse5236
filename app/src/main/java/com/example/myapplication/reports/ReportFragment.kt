@@ -9,9 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.myapplication.viewmodel.ReportsViewModel
@@ -22,6 +22,7 @@ import kotlin.getValue
 class ReportFragment : Fragment() {
     private val reportFragTag = "ReportFragment"
     private val myReports = mutableListOf<Report>()
+    private var selectedReportId: String? = null
     private lateinit var adapter: AllMyReportsAdapter
     private val viewModel: ReportsViewModel by viewModels()
 
@@ -33,6 +34,12 @@ class ReportFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_report, container, false)
         val recyclerView = view.findViewById<RecyclerView>(R.id.reportRecyclerView)
+        val petNameText = view.findViewById<EditText>(R.id.petNameEditText)
+        val petTypeText = view.findViewById<EditText>(R.id.petTypeEditText)
+        val latitudeText = view.findViewById<EditText>(R.id.latitudeEditText)
+        val longitudeText = view.findViewById<EditText>(R.id.longitudeEditText)
+        val contactText = view.findViewById<EditText>(R.id.contactEditText)
+        val submitButton = view.findViewById<Button>(R.id.submitButton)
 
         val user = FirebaseAuth.getInstance().currentUser
         val currentUserId = user?.uid ?: ""
@@ -42,17 +49,17 @@ class ReportFragment : Fragment() {
         val userReports = myReports.filter { it.userId == currentUserId }.toMutableList()
         adapter = AllMyReportsAdapter(userReports)
         recyclerView.adapter = adapter
+
+        adapter.onItemClickListener = { report ->
+            val action = ReportFragmentDirections
+                .actionReportFragmentToReportDetailFragment(report.id)
+            findNavController().navigate(action)
+        }
+
         viewModel.getUserReports(currentUserId).observe(viewLifecycleOwner) { reports ->
             adapter.updateReports(reports.toMutableList())
             recyclerView.scrollToPosition(adapter.itemCount - 1)
         }
-
-        val petNameText = view.findViewById<EditText>(R.id.petNameEditText)
-        val petTypeText = view.findViewById<EditText>(R.id.petTypeEditText)
-        val latitudeText = view.findViewById<EditText>(R.id.latitudeEditText)
-        val longitudeText = view.findViewById<EditText>(R.id.longitudeEditText)
-        val contactText = view.findViewById<EditText>(R.id.contactEditText)
-        val submitButton = view.findViewById<Button>(R.id.submitButton)
 
         submitButton.setOnClickListener {
             val lat = latitudeText.text.toString().toDoubleOrNull()

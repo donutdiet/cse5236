@@ -9,6 +9,9 @@ import com.example.myapplication.R
 
 class AllMyReportsAdapter(private var reports: MutableList<Report>) :
     RecyclerView.Adapter<AllMyReportsAdapter.ViewHolder>() {
+
+    var onItemClickListener: ((Report) -> Unit)? = null
+
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val titleText: TextView = itemView.findViewById(R.id.reportTitle)
         val descriptionText: TextView = itemView.findViewById(R.id.reportDescription)
@@ -34,10 +37,14 @@ class AllMyReportsAdapter(private var reports: MutableList<Report>) :
         holder.titleText.text = "Missing ${report.petType.ifBlank { "Pet" }}: ${report.petName.ifBlank { "Unnamed" }}"
 
         holder.descriptionText.text = """
-        Last Seen: $lastSeenString
-        Contact: ${report.contact.ifBlank { "No contact info" }}
-        Reported: $dateString
-    """.trimIndent()
+            Last Seen: $lastSeenString
+            Contact: ${report.contact.ifBlank { "No contact info" }}
+            Reported: $dateString
+        """.trimIndent()
+
+        holder.itemView.setOnClickListener {
+            onItemClickListener?.invoke(report)
+        }
     }
 
 
