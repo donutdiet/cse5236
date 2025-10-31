@@ -9,18 +9,21 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.widget.Button
 import android.widget.EditText
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import androidx.lifecycle.ViewModelProvider
 import com.example.myapplication.viewmodel.ReportsViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.GeoPoint
+import kotlin.getValue
 
 class ReportFragment : Fragment() {
     private val reportFragTag = "ReportFragment"
     private val myReports = mutableListOf<Report>()
     private lateinit var adapter: AllMyReportsAdapter
-    private lateinit var viewModel: ReportsViewModel
+    private val viewModel: ReportsViewModel by viewModels()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,7 +40,7 @@ class ReportFragment : Fragment() {
         val userReports = myReports.filter { it.userId == currentUserId }.toMutableList()
         adapter = AllMyReportsAdapter(userReports)
         recyclerView.adapter = adapter
-        viewModel = ViewModelProvider(this)[ReportsViewModel::class.java]
+        //viewModel = ViewModelProvider(this)[ReportsViewModel::class.java]
         viewModel.getUserReports(currentUserId).observe(viewLifecycleOwner) { reports ->
             adapter.updateReports(reports.toMutableList())
             recyclerView.scrollToPosition(adapter.itemCount - 1)
@@ -50,12 +53,9 @@ class ReportFragment : Fragment() {
         val submitButton = view.findViewById<Button>(R.id.submitButton)
 
         submitButton.setOnClickListener {
-            val lat = latitudeText.text.toString().toDoubleOrNull()
-            val lon = longitudeText.text.toString().toDoubleOrNull()
-            var geoPoint: GeoPoint? = null
-            if (lat != null && lon != null) {
-                geoPoint = GeoPoint(lat, lon)
-            }
+            val lat = latitudeText.text.toString().toDouble()
+            val lon = longitudeText.text.toString().toDouble()
+            val geoPoint = GeoPoint(lat, lon)
 
             val report = Report(
                 petName = petNameText.text.toString(),

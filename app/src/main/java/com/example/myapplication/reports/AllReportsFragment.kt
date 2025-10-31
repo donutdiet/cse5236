@@ -10,14 +10,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.myapplication.viewmodel.ReportsViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 
 
 class AllReportsFragment : Fragment() {
     private val allReportsFragTag = "AllReportsFragment"
-    private lateinit var viewModel: ReportsViewModel
     private lateinit var adapter: AllMyReportsAdapter
-
+    private val viewModel: ReportsViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -26,7 +25,8 @@ class AllReportsFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
         adapter = AllMyReportsAdapter(mutableListOf())
         recyclerView.adapter = adapter
-        viewModel = ViewModelProvider(this)[ReportsViewModel::class.java]
+
+        //viewModel = ViewModelProvider(this)[ReportsViewModel::class.java]
         viewModel.getAllReports().observe(viewLifecycleOwner) { reports ->
             adapter.updateReports(reports.toMutableList())
         }
