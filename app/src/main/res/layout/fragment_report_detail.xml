@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:text="Edit Report"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="36dp"
+        android:layout_marginBottom="16dp"/>
+
+    <EditText
+        android:id="@+id/petNameEditText"
+        android:hint="Enter your pet's name"
+        android:inputType="textCapWords"
+        android:imeOptions="actionNext"
+        android:singleLine="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/petTypeEditText"
+        android:hint="Enter your pet's species (e.g. dog, cat)"
+        android:inputType="textCapWords"
+        android:imeOptions="actionNext"
+        android:singleLine="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/latitudeEditText"
+        android:hint="Enter last seen latitude (-90 to 90)"
+        android:inputType="numberDecimal|numberSigned"
+        android:imeOptions="actionNext"
+        android:singleLine="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/longitudeEditText"
+        android:hint="Enter last seen longitude (-180 to 180)"
+        android:inputType="numberDecimal|numberSigned"
+        android:imeOptions="actionNext"
+        android:singleLine="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/contactEditText"
+        android:hint="Enter contact info (email or phone)"
+        android:inputType="textEmailAddress"
+        android:imeOptions="actionDone"
+        android:singleLine="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="36dp"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/deleteButton"
+            android:text="Delete Report"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/holo_red_light" />
+
+        <Button
+            android:id="@+id/updateButton"
+            android:text="Update Report"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

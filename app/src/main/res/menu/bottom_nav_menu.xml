@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/nav_map"
+        android:id="@+id/mapFragment"
         android:icon="@android:drawable/ic_menu_mylocation"
         android:title="Track" />
     <item
-        android:id="@+id/nav_report"
+        android:id="@+id/reportFragment"
         android:icon="@android:drawable/ic_menu_add"
         android:title="New Report" />
     <item
-        android:id="@+id/nav_allReports"
+        android:id="@+id/allReportsFragment"
         android:icon="@android:drawable/ic_menu_agenda"
         android:title="All Reports" />
     <item
-        android:id="@+id/nav_profile"
+        android:id="@+id/profileFragment"
         android:icon="@android:drawable/ic_menu_info_details"
         android:title="Profile" />
 </menu>

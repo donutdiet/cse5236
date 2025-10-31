@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mapFragment">
+
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.example.myapplication.map.MapFragment" />
+
+    <fragment
+        android:id="@+id/allReportsFragment"
+        android:name="com.example.myapplication.reports.AllReportsFragment" />
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.myapplication.profile.ProfileFragment" />
+
+    <fragment
+        android:id="@+id/reportFragment"
+        android:name="com.example.myapplication.reports.ReportFragment">
+        <action
+            android:id="@+id/action_reportFragment_to_reportDetailFragment"
+            app:destination="@id/reportDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/reportDetailFragment"
+        android:name="com.example.myapplication.reports.ReportDetailFragment">
+        <argument
+            android:name="reportId"
+            app:argType="string" />
+    </fragment>
+
+</navigation>
