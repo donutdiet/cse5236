@@ -13,7 +13,6 @@ class ReportsRepository {
     fun getAllReports(): MutableLiveData<List<Report>> {
         val liveData = MutableLiveData<List<Report>>()
         reportsCollection
-            .orderBy("timestamp")
             .addSnapshotListener { snapshot, e ->
                 if (e != null) {
                     Log.e("ReportsRepository", "Error fetching all reports", e)
@@ -24,7 +23,7 @@ class ReportsRepository {
                         val report = doc.toObject(Report::class.java)
                         report?.apply { id = doc.id }
                     }
-                    liveData.value = reports
+                    liveData.value = reports.sortedByDescending { it.timestamp }
                 }
             }
         return liveData
@@ -34,7 +33,6 @@ class ReportsRepository {
         val liveData = MutableLiveData<List<Report>>()
         reportsCollection
             .whereEqualTo("userId", userId)
-            .orderBy("timestamp")
             .addSnapshotListener { snapshot, e ->
                 if (e != null) {
                     Log.e("ReportsRepository", "Error fetching reports", e)
@@ -45,7 +43,7 @@ class ReportsRepository {
                         val report = doc.toObject(Report::class.java)
                         report?.apply { id = doc.id }
                     }
-                    liveData.value = reports
+                    liveData.value = reports.sortedByDescending { it.timestamp }
                 }
             }
         return liveData
