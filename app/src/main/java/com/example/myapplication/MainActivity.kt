@@ -23,8 +23,8 @@ class MainActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.nav_map -> currentFragment(MapFragment())
                 R.id.nav_report -> currentFragment(ReportFragment())
-                R.id.nav_profile -> currentFragment(ProfileFragment())
                 R.id.nav_allReports -> currentFragment(AllReportsFragment())
+                R.id.nav_profile -> currentFragment(ProfileFragment())
             }
             true
         }
