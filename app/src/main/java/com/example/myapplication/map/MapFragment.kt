@@ -2,6 +2,7 @@ package com.example.myapplication.map
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,6 +18,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 
 class MapFragment : Fragment(), OnMapReadyCallback {
@@ -73,6 +75,15 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             if (location != null) {
                 val userLatLng = LatLng(location.latitude, location.longitude)
                 googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 17f))
+
+                googleMap?.addCircle(
+                    CircleOptions()
+                        .center(userLatLng)
+                        .radius(800.0)
+                        .strokeColor(Color.BLUE)
+                        .fillColor(0x220000FF)
+                        .strokeWidth(3f)
+                )
             } else {
                 Toast.makeText(requireContext(), "Unable to get current location", Toast.LENGTH_SHORT).show()
             }
@@ -123,6 +134,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onResume() {
         super.onResume()
         mapView.onResume()
+        if (::fusedLocationClient.isInitialized && googleMap != null) {
+            enableMyLocation()
+        }
         Log.d(mapFragTag, "onResume")
     }
 
