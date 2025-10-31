@@ -7,9 +7,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.example.myapplication.R
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
@@ -20,16 +23,14 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var mapView: MapView
     private var googleMap: GoogleMap? = null
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val mapFragTag = "MapFragment"
 
     companion object {
         private const val MAPVIEW_BUNDLE_KEY = "MapViewBundleKey"
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 1001
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.d(mapFragTag, "onCreate")
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,6 +41,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         val view = inflater.inflate(R.layout.fragment_map, container, false)
         mapView = view.findViewById(R.id.mapView)
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
         var mapViewBundle: Bundle? = null
         if (savedInstanceState != null) {
@@ -53,19 +55,45 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
+        googleMap?.uiSettings?.isMyLocationButtonEnabled = true
+        googleMap?.uiSettings?.isZoomControlsEnabled = true
 
-        val osu = LatLng(40.0076, -83.0300)
-        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(osu, 15f))
+        enableMyLocation()
+    }
 
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            googleMap?.isMyLocationEnabled = true
+    private fun enableMyLocation() {
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
+            return
+        }
+
+        googleMap?.isMyLocationEnabled = true
+
+        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+            if (location != null) {
+                val userLatLng = LatLng(location.latitude, location.longitude)
+                googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 17f))
+            } else {
+                Toast.makeText(requireContext(), "Unable to get current location", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
-    override fun onLowMemory() {
-        super.onLowMemory()
-        mapView.onLowMemory()
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE &&
+            grantResults.isNotEmpty() &&
+            grantResults[0] == PackageManager.PERMISSION_GRANTED
+        ) {
+            enableMyLocation()
+        } else {
+            Toast.makeText(requireContext(), "Location permission denied", Toast.LENGTH_SHORT).show()
+        }
     }
+
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -77,6 +105,16 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         mapView.onSaveInstanceState(mapViewBundle)
     }
 
+    override fun onLowMemory() {
+        super.onLowMemory()
+        mapView.onLowMemory()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.d(mapFragTag, "onCreate")
+    }
+
     override fun onStart() {
         super.onStart()
         Log.d(mapFragTag, "onStart")
@@ -84,16 +122,19 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onResume() {
         super.onResume()
+        mapView.onResume()
         Log.d(mapFragTag, "onResume")
     }
 
     override fun onPause() {
         super.onPause()
+        mapView.onPause()
         Log.d(mapFragTag, "onPause")
     }
 
     override fun onStop() {
         super.onStop()
+        mapView.onStop()
         Log.d(mapFragTag, "onStop")
     }
 
@@ -104,6 +145,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onDestroy() {
         super.onDestroy()
+        mapView.onDestroy()
         Log.d(mapFragTag, "onDestroy")
     }
 }
