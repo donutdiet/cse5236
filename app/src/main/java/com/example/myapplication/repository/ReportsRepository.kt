@@ -76,4 +76,41 @@ class ReportsRepository {
     fun addReport(report: Report) {
         reportsCollection.add(report)
     }
+
+    fun updateReport(report: Report, onComplete: (Boolean) -> Unit) {
+        if (report.id.isBlank()) {
+            onComplete(false)
+            return
+        }
+
+        val data = mapOf(
+            "petName" to report.petName,
+            "petType" to report.petType,
+            "lastSeen" to report.lastSeen,
+            "contact" to report.contact
+        )
+
+        reportsCollection.document(report.id)
+            .update(data)
+            .addOnSuccessListener { onComplete(true) }
+            .addOnFailureListener { e ->
+                Log.e("ReportsRepository", "Error updating report ${report.id}", e)
+                onComplete(false)
+            }
+    }
+
+    fun deleteReport(reportId: String, onComplete: (Boolean) -> Unit) {
+        if (reportId.isBlank()) {
+            onComplete(false)
+            return
+        }
+
+        reportsCollection.document(reportId)
+            .delete()
+            .addOnSuccessListener { onComplete(true) }
+            .addOnFailureListener { e ->
+                Log.e("ReportsRepository", "Error deleting report $reportId", e)
+                onComplete(false)
+            }
+    }
 }

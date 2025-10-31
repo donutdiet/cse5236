@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.myapplication.viewmodel.ReportsViewModel
 import com.example.myapplication.R
@@ -59,31 +60,42 @@ class ReportDetailFragment : Fragment() {
             }
         }
 
-//        updateButton.setOnClickListener {
-//            val lat = latitudeEditText.text.toString().toDoubleOrNull()
-//            val lon = longitudeEditText.text.toString().toDoubleOrNull()
-//            if (lat == null || lon == null || lat !in -90.0..90.0 || lon !in -180.0..180.0) {
-//                Toast.makeText(requireContext(), "Enter valid latitude/longitude", Toast.LENGTH_SHORT).show()
-//                return@setOnClickListener
-//            }
-//
-//            val updatedReport = Report(
-//                petName = petNameEditText.text.toString(),
-//                petType = petTypeEditText.text.toString(),
-//                lastSeen = GeoPoint(lat, lon),
-//                contact = contactEditText.text.toString(),
-//                userId = "" // optional: keep same userId or pass from original
-//            )
-//
-//            viewModel.updateReport(reportId, updatedReport)
-//            Toast.makeText(requireContext(), "Report updated!", Toast.LENGTH_SHORT).show()
-//        }
-//
-//        deleteButton.setOnClickListener {
-//            viewModel.deleteReport(reportId)
-//            Toast.makeText(requireContext(), "Report deleted", Toast.LENGTH_SHORT).show()
-//            findNavController().popBackStack()
-//        }
+        viewModel.updateResult.observe(viewLifecycleOwner) { success ->
+            if (success) {
+                Toast.makeText(context, "Report updated!", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Failed to update report.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        viewModel.deleteResult.observe(viewLifecycleOwner) { success ->
+            if (success) {
+                Toast.makeText(context, "Report deleted!", Toast.LENGTH_SHORT).show()
+                findNavController().popBackStack()
+            } else {
+                Toast.makeText(context, "Failed to delete report.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        updateButton.setOnClickListener {
+            val lat = latitudeEditText.text.toString().toDoubleOrNull()
+            val lng = longitudeEditText.text.toString().toDoubleOrNull()
+            val geoPoint = if (lat != null && lng != null) GeoPoint(lat, lng) else null
+
+            val updatedReport = Report(
+                id = reportId,
+                petName = petNameEditText.text.toString(),
+                petType = petTypeEditText.text.toString(),
+                lastSeen = geoPoint,
+                contact = contactEditText.text.toString()
+            )
+
+            viewModel.updateReport(updatedReport)
+        }
+
+        deleteButton.setOnClickListener {
+            viewModel.deleteReport(reportId)
+        }
 
         return view
     }
