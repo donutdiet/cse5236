@@ -1,59 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="16dp"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <EditText
-        android:id="@+id/petNameEditText"
-        android:hint="Pet Name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <EditText
-        android:id="@+id/petTypeEditText"
-        android:hint="Pet Type"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <EditText
-        android:id="@+id/latitudeEditText"
-        android:hint="Last Seen Latitude"
-        android:inputType="numberDecimal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <EditText
-        android:id="@+id/longitudeEditText"
-        android:hint="Last Seen Longitude"
-        android:inputType="numberDecimal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <EditText
-        android:id="@+id/contactEditText"
-        android:hint="Contact Info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+    android:layout_height="match_parent"
+    android:padding="16dp">
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="end">
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/petNameEditText"
+            android:hint="Pet Name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/petTypeEditText"
+            android:hint="Pet Type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/latitudeEditText"
+            android:hint="Latitude"
+            android:inputType="numberDecimal|numberSigned"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/longitudeEditText"
+            android:hint="Longitude"
+            android:inputType="numberDecimal|numberSigned"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/contactEditText"
+            android:hint="Contact Info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/updateButton"
+            android:text="Update Report"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" />
 
         <Button
             android:id="@+id/deleteButton"
-            android:text="Delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <Button
-            android:id="@+id/saveButton"
-            android:text="Save"
+            android:text="Delete Report"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"/>
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@android:color/holo_red_light" />
+
     </LinearLayout>
-</LinearLayout>
+</ScrollView>

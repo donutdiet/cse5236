@@ -51,6 +51,8 @@ class ReportFragment : Fragment() {
         recyclerView.adapter = adapter
 
         adapter.onItemClickListener = { report ->
+            Log.d("ReportFragment", "NavController? ${try { findNavController() } catch(e: Exception) { e.message }}")
+
             val action = ReportFragmentDirections
                 .actionReportFragmentToReportDetailFragment(report.id)
             findNavController().navigate(action)
