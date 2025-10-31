@@ -23,7 +23,7 @@
         <EditText
             android:id="@+id/petNameEditText"
             android:hint="Enter your pet's name"
-            android:inputType="textPersonName"
+            android:inputType="textCapWords"
             android:imeOptions="actionNext"
             android:singleLine="true"
             android:layout_width="match_parent"
