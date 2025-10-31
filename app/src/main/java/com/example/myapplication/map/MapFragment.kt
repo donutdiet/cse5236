@@ -74,7 +74,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
             if (location != null) {
                 val userLatLng = LatLng(location.latitude, location.longitude)
-                googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 17f))
+                googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 16f))
 
                 googleMap?.addCircle(
                     CircleOptions()
