@@ -9,10 +9,10 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
-import androidx.lifecycle.ViewModelProvider
 import com.example.myapplication.viewmodel.ReportsViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.GeoPoint
@@ -40,7 +40,6 @@ class ReportFragment : Fragment() {
         val userReports = myReports.filter { it.userId == currentUserId }.toMutableList()
         adapter = AllMyReportsAdapter(userReports)
         recyclerView.adapter = adapter
-        //viewModel = ViewModelProvider(this)[ReportsViewModel::class.java]
         viewModel.getUserReports(currentUserId).observe(viewLifecycleOwner) { reports ->
             adapter.updateReports(reports.toMutableList())
             recyclerView.scrollToPosition(adapter.itemCount - 1)
@@ -53,23 +52,30 @@ class ReportFragment : Fragment() {
         val submitButton = view.findViewById<Button>(R.id.submitButton)
 
         submitButton.setOnClickListener {
-            val lat = latitudeText.text.toString().toDouble()
-            val lon = longitudeText.text.toString().toDouble()
-            val geoPoint = GeoPoint(lat, lon)
+            val lat = latitudeText.text.toString().toDoubleOrNull()
+            val lon = longitudeText.text.toString().toDoubleOrNull()
 
-            val report = Report(
-                petName = petNameText.text.toString(),
-                petType = petTypeText.text.toString(),
-                lastSeen = geoPoint,
-                contact = contactText.text.toString(),
-                userId = currentUserId
-            )
-            viewModel.addReport(report)
-            petNameText.text.clear()
-            petTypeText.text.clear()
-            latitudeText.text.clear()
-            longitudeText.text.clear()
-            contactText.text.clear()
+            if (lat != null && lon != null && lat in -90.0..90.0 && lon in -180.0..180.0) {
+                val geoPoint = GeoPoint(lat, lon)
+                val report = Report(
+                    petName = petNameText.text.toString(),
+                    petType = petTypeText.text.toString(),
+                    lastSeen = geoPoint,
+                    contact = contactText.text.toString(),
+                    userId = currentUserId
+                )
+                viewModel.addReport(report)
+
+                Toast.makeText(requireContext(), "Report submitted successfully for ${petNameText}!", Toast.LENGTH_SHORT).show()
+
+                petNameText.text.clear()
+                petTypeText.text.clear()
+                latitudeText.text.clear()
+                longitudeText.text.clear()
+                contactText.text.clear()
+            } else {
+                Toast.makeText(requireContext(), "Please enter valid latitude (-90 to 90) and longitude (-180 to 180).", Toast.LENGTH_SHORT).show()
+            }
         }
         return view
     }
