@@ -11,7 +11,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.example.myapplication.R
+import com.example.myapplication.reports.Report
+import com.example.myapplication.viewmodel.ReportsViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -20,17 +23,31 @@ import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import kotlin.getValue
 
 class MapFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var mapView: MapView
     private var googleMap: GoogleMap? = null
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+    private val viewModel: ReportsViewModel by viewModels()
+
+
     private val mapFragTag = "MapFragment"
 
     companion object {
         private const val MAPVIEW_BUNDLE_KEY = "MapViewBundleKey"
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1001
+
+        fun formatTimestamp(date: Date): String {
+            val sdf = SimpleDateFormat("MMM dd, yyyy • h:mm a", Locale.getDefault())
+            return sdf.format(date)
+        }
     }
 
 
@@ -61,6 +78,37 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         googleMap?.uiSettings?.isZoomControlsEnabled = true
 
         enableMyLocation()
+
+        viewModel.getAllReports().observe(viewLifecycleOwner) { reports ->
+            addMarkersForReports(reports)
+        }
+    }
+
+    private fun addMarkersForReports(reports: List<Report>) {
+        googleMap?.let { map ->
+            for (report in reports) {
+                val geo = report.lastSeen
+                if (geo != null) {
+                    val position = LatLng(geo.latitude, geo.longitude)
+
+                    val formattedTime = report.timestamp?.let { formatTimestamp(it) } ?: "Unknown time"
+
+                    val title = "Missing ${report.petType.ifBlank { "Unknown" }}: ${report.petName.ifBlank { "Unknown" }}"
+
+                    val snippet = """
+                        Contact: ${report.contact.ifEmpty { "No contact provided" }}
+                        Reported: $formattedTime
+                    """.trimIndent()
+
+                    map.addMarker(
+                        MarkerOptions()
+                            .position(position)
+                            .title(title)
+                            .snippet(snippet)
+                    )
+                }
+            }
+        }
     }
 
     private fun enableMyLocation() {
