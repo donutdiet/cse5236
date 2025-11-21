@@ -85,7 +85,8 @@ class ReportsRepository {
             "petName" to report.petName,
             "petType" to report.petType,
             "lastSeen" to report.lastSeen,
-            "contact" to report.contact
+            "contact" to report.contact,
+            "found" to report.found
         )
 
         reportsCollection.document(report.id)

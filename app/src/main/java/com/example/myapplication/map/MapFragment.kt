@@ -138,7 +138,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         currentReports = reports
 
         googleMap?.let { map ->
-            for (report in reports) {
+            for (report in reports.filter { !it.found }) {
                 val geo = report.lastSeen ?: continue
                 val position = LatLng(geo.latitude, geo.longitude)
 

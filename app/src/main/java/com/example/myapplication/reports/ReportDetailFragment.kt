@@ -25,6 +25,7 @@ class ReportDetailFragment : Fragment() {
     private lateinit var latitudeEditText: EditText
     private lateinit var longitudeEditText: EditText
     private lateinit var contactEditText: EditText
+    private lateinit var foundButton: Button
     private lateinit var updateButton: Button
     private lateinit var deleteButton: Button
 
@@ -46,6 +47,7 @@ class ReportDetailFragment : Fragment() {
         latitudeEditText = view.findViewById(R.id.latitudeEditText)
         longitudeEditText = view.findViewById(R.id.longitudeEditText)
         contactEditText = view.findViewById(R.id.contactEditText)
+        foundButton = view.findViewById(R.id.foundButton)
         updateButton = view.findViewById(R.id.updateButton)
         deleteButton = view.findViewById(R.id.deleteButton)
 
@@ -75,6 +77,23 @@ class ReportDetailFragment : Fragment() {
             } else {
                 Toast.makeText(context, "Failed to delete report.", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        foundButton.setOnClickListener {
+            val lat = latitudeEditText.text.toString().toDoubleOrNull()
+            val lng = longitudeEditText.text.toString().toDoubleOrNull()
+            val geoPoint = if (lat != null && lng != null) GeoPoint(lat, lng) else null
+
+            val updatedReport = Report(
+                id = reportId,
+                petName = petNameEditText.text.toString(),
+                petType = petTypeEditText.text.toString(),
+                lastSeen = geoPoint,
+                contact = contactEditText.text.toString(),
+                found = true
+            )
+
+            viewModel.updateReport(updatedReport)
         }
 
         updateButton.setOnClickListener {

@@ -11,6 +11,7 @@ data class Report(
     val lastSeen: GeoPoint? = null,
     val contact: String = "",
     val userId: String = "",
+    val found: Boolean = false,
     @ServerTimestamp val timestamp: Date? = null,
     @get:Exclude var id: String = ""
 )
