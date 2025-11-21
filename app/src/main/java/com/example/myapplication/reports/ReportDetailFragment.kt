@@ -64,6 +64,7 @@ class ReportDetailFragment : Fragment() {
 
         viewModel.updateResult.observe(viewLifecycleOwner) { success ->
             if (success) {
+                findNavController().popBackStack()
                 Toast.makeText(context, "Report updated!", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(context, "Failed to update report.", Toast.LENGTH_SHORT).show()
@@ -72,8 +73,8 @@ class ReportDetailFragment : Fragment() {
 
         viewModel.deleteResult.observe(viewLifecycleOwner) { success ->
             if (success) {
-                Toast.makeText(context, "Report deleted!", Toast.LENGTH_SHORT).show()
                 findNavController().popBackStack()
+                Toast.makeText(context, "Report deleted!", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(context, "Failed to delete report.", Toast.LENGTH_SHORT).show()
             }
