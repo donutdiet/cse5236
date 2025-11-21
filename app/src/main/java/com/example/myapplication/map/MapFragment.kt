@@ -2,13 +2,19 @@ package com.example.myapplication.map
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.SwitchCompat
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -21,13 +27,17 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import kotlin.getValue
+import androidx.core.graphics.scale
 
 class MapFragment : Fragment(), OnMapReadyCallback {
 
@@ -43,6 +53,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     companion object {
         private const val MAPVIEW_BUNDLE_KEY = "MapViewBundleKey"
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1001
+        private const val CIRCLE_RADIUS = 3000.0
+
+        private var userLatLng: LatLng? = null
+        private var showOnlyWithinRadius = true
+        private var currentReports: List<Report> = emptyList()
+
 
         fun formatTimestamp(date: Date): String {
             val sdf = SimpleDateFormat("MMM dd, yyyy • h:mm a", Locale.getDefault())
@@ -50,6 +66,27 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    inner class ReportInfoWindowAdapter : GoogleMap.InfoWindowAdapter {
+
+        private val window = layoutInflater.inflate(R.layout.marker_info_window, null)
+
+        private fun render(marker: Marker, view: View) {
+            val titleView = view.findViewById<TextView>(R.id.title)
+            val snippetView = view.findViewById<TextView>(R.id.snippet)
+
+            titleView.text = marker.title
+            snippetView.text = marker.snippet
+        }
+
+        override fun getInfoWindow(marker: Marker): View? {
+            render(marker, window)
+            return window
+        }
+
+        override fun getInfoContents(marker: Marker): View? {
+            return null
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,6 +96,18 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         Log.d(mapFragTag, "onCreateView")
 
         val view = inflater.inflate(R.layout.fragment_map, container, false)
+
+        val toggle = view.findViewById<SwitchCompat>(R.id.toggleRadius)
+        toggle.setOnCheckedChangeListener { _, isChecked ->
+            showOnlyWithinRadius = isChecked
+            refreshMarkers()
+        }
+
+        val refreshButton = view.findViewById<Button>(R.id.refreshMarkersButton)
+        refreshButton.setOnClickListener {
+            refreshMarkers()
+        }
+
         mapView = view.findViewById(R.id.mapView)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
@@ -76,6 +125,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         googleMap = map
         googleMap?.uiSettings?.isMyLocationButtonEnabled = true
         googleMap?.uiSettings?.isZoomControlsEnabled = true
+        googleMap?.setInfoWindowAdapter(ReportInfoWindowAdapter())
 
         enableMyLocation()
 
@@ -85,30 +135,45 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun addMarkersForReports(reports: List<Report>) {
+        currentReports = reports
+
         googleMap?.let { map ->
             for (report in reports) {
-                val geo = report.lastSeen
-                if (geo != null) {
-                    val position = LatLng(geo.latitude, geo.longitude)
+                val geo = report.lastSeen ?: continue
+                val position = LatLng(geo.latitude, geo.longitude)
 
-                    val formattedTime = report.timestamp?.let { formatTimestamp(it) } ?: "Unknown time"
-
-                    val title = "Missing ${report.petType.ifBlank { "Unknown" }}: ${report.petName.ifBlank { "Unknown" }}"
-
-                    val snippet = """
-                        Contact: ${report.contact.ifEmpty { "No contact provided" }}
-                        Reported: $formattedTime
-                    """.trimIndent()
-
-                    map.addMarker(
-                        MarkerOptions()
-                            .position(position)
-                            .title(title)
-                            .snippet(snippet)
-                    )
+                if (showOnlyWithinRadius) {
+                    val center = userLatLng ?: continue
+                    if (!isWithinRadius(center, position, CIRCLE_RADIUS)) {
+                        continue
+                    }
                 }
+
+                val formattedTime = report.timestamp?.let { formatTimestamp(it) } ?: "Unknown time"
+
+                val title = "Missing ${report.petType.ifBlank { "Unknown" }}: ${report.petName.ifBlank { "Unknown" }}"
+
+                val snippet = """
+                    Contact: ${report.contact.ifEmpty { "No contact provided" }}
+                    Reported: $formattedTime
+                """.trimIndent()
+
+                map.addMarker(
+                    MarkerOptions()
+                        .position(position)
+                        .title(title)
+                        .snippet(snippet)
+                        .icon(getMarkerIcon())
+                )
             }
         }
+    }
+
+    private fun getMarkerIcon(): BitmapDescriptor {
+        val bitmap = BitmapFactory.decodeResource(resources, R.drawable.ic_pet)
+        val scaled = bitmap.scale(80, 80, false)
+
+        return BitmapDescriptorFactory.fromBitmap(scaled)
     }
 
     private fun enableMyLocation() {
@@ -121,13 +186,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
             if (location != null) {
-                val userLatLng = LatLng(location.latitude, location.longitude)
-                googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 16f))
+                userLatLng = LatLng(location.latitude, location.longitude)
+                googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng!!, 13f))
 
                 googleMap?.addCircle(
                     CircleOptions()
-                        .center(userLatLng)
-                        .radius(800.0)
+                        .center(userLatLng!!)
+                        .radius(CIRCLE_RADIUS)
                         .strokeColor(Color.BLUE)
                         .fillColor(0x220000FF)
                         .strokeWidth(3f)
@@ -137,6 +202,43 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             }
         }
     }
+
+    private fun refreshMarkers() {
+        googleMap?.clear()
+
+        // Re-add circle
+        userLatLng?.let {
+            googleMap?.addCircle(
+                CircleOptions()
+                    .center(it)
+                    .radius(CIRCLE_RADIUS)
+                    .strokeColor(Color.BLUE)
+                    .fillColor(0x220000FF)
+                    .strokeWidth(3f)
+            )
+        }
+
+        // Re-add filtered or unfiltered markers
+        addMarkersForReports(currentReports)
+    }
+
+
+    private fun isWithinRadius(
+        center: LatLng,
+        point: LatLng,
+        radiusMeters: Double
+    ): Boolean {
+        val results = FloatArray(1)
+        Location.distanceBetween(
+            center.latitude,
+            center.longitude,
+            point.latitude,
+            point.longitude,
+            results
+        )
+        return results[0] <= radiusMeters
+    }
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int,

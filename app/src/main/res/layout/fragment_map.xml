@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -10,5 +8,34 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/overlayControls"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:elevation="8dp"
+        android:layout_margin="16dp"
+        android:layout_gravity="bottom|start"
+        android:gravity="center_vertical"
+        android:clipToPadding="false"
+        android:clipChildren="false"
+        android:dividerPadding="8dp">
 
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/toggleRadius"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Within Radius  "
+            android:paddingEnd="8dp" />
+
+        <Button
+            android:id="@+id/refreshMarkersButton"
+            android:text="Refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
+
+</FrameLayout>
