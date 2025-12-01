@@ -1,16 +1,24 @@
 package com.example.myapplication.reports
 
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
+import com.example.myapplication.viewmodel.SettingsViewModel
 
-class AllMyReportsAdapter(private var reports: MutableList<Report>) :
+class AllMyReportsAdapter(
+    private var reports: MutableList<Report>,
+    private val settingsViewModel: SettingsViewModel,
+    private val lifecycleOwner: LifecycleOwner
+) :
     RecyclerView.Adapter<AllMyReportsAdapter.ViewHolder>() {
 
     var onItemClickListener: ((Report) -> Unit)? = null
+    private val originalTextSizes = mutableMapOf<Int, Float>()
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val titleText: TextView = itemView.findViewById(R.id.reportTitle)
@@ -45,8 +53,34 @@ class AllMyReportsAdapter(private var reports: MutableList<Report>) :
         holder.itemView.setOnClickListener {
             onItemClickListener?.invoke(report)
         }
-    }
+        val itemTextViews = listOf(
+            holder.titleText,
+            holder.descriptionText
+        )
+        itemTextViews.forEach { textView ->
+            if (!originalTextSizes.containsKey(textView.id)) {
+                originalTextSizes[textView.id] = textView.textSize
+            }
+        }
+        settingsViewModel.isTextSizeIncreased.observe(lifecycleOwner) { isIncreased ->
 
+            val scaleMultiplier: Float
+            if (isIncreased) {
+                scaleMultiplier = 1.2f
+            } else {
+                scaleMultiplier = 1.0f
+            }
+
+            itemTextViews.forEach { textView ->
+                originalTextSizes[textView.id]?.let { originalSize ->
+                    textView.setTextSize(
+                        TypedValue.COMPLEX_UNIT_PX,
+                        originalSize * scaleMultiplier
+                    )
+                }
+            }
+        }
+    }
 
     override fun getItemCount(): Int = reports.size
 

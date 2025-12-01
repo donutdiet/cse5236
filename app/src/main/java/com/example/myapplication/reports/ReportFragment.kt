@@ -2,30 +2,34 @@ package com.example.myapplication.reports
 
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.myapplication.viewmodel.ReportsViewModel
+import com.example.myapplication.viewmodel.SettingsViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.GeoPoint
-import kotlin.getValue
 
 class ReportFragment : Fragment() {
     private val reportFragTag = "ReportFragment"
-    private val myReports = mutableListOf<Report>()
-    private var selectedReportId: String? = null
     private lateinit var adapter: AllMyReportsAdapter
-    private val viewModel: ReportsViewModel by viewModels()
-
+    private val viewModel: ReportsViewModel by lazy {
+        ViewModelProvider(this)[ReportsViewModel::class.java]
+    }
+    private val settingsViewModel: SettingsViewModel by activityViewModels()
+    private val originalTextSizes = mutableMapOf<Int, Float>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,19 +44,52 @@ class ReportFragment : Fragment() {
         val longitudeText = view.findViewById<EditText>(R.id.longitudeEditText)
         val contactText = view.findViewById<EditText>(R.id.contactEditText)
         val submitButton = view.findViewById<Button>(R.id.submitButton)
+        val reportLostPetHeader = view.findViewById<TextView>(R.id.reportLostPetHeader)
+        val myPetReportsHeader = view.findViewById<TextView>(R.id.myPetReportsHeader)
+
+        val allTextViews = listOf(
+            reportLostPetHeader,
+            myPetReportsHeader,
+            petNameText,
+            petTypeText,
+            latitudeText,
+            longitudeText,
+            contactText,
+            submitButton
+        )
+
+        allTextViews.forEach { view ->
+            originalTextSizes[view.id] = view.textSize
+        }
+
+        settingsViewModel.isTextSizeIncreased.observe(viewLifecycleOwner) { isIncreased ->
+
+            val multiplier: Float
+            if (isIncreased) {
+                multiplier = 1.2f
+            } else {
+                multiplier = 1.0f
+            }
+
+            allTextViews.forEach { view ->
+                originalTextSizes[view.id]?.let { originalSize ->
+                    view.setTextSize(
+                        TypedValue.COMPLEX_UNIT_PX,
+                        originalSize * multiplier
+                    )
+                }
+            }
+        }
 
         val user = FirebaseAuth.getInstance().currentUser
         val currentUserId = user?.uid ?: ""
 
         recyclerView.layoutManager = LinearLayoutManager(activity)
 
-        val userReports = myReports.filter { it.userId == currentUserId }.toMutableList()
-        adapter = AllMyReportsAdapter(userReports)
+        adapter = AllMyReportsAdapter(mutableListOf(), settingsViewModel, viewLifecycleOwner)
         recyclerView.adapter = adapter
 
         adapter.onItemClickListener = { report ->
-            Log.d("ReportFragment", "NavController? ${try { findNavController() } catch(e: Exception) { e.message }}")
-
             val action = ReportFragmentDirections
                 .actionReportFragmentToReportDetailFragment(report.id)
             findNavController().navigate(action)
