@@ -12,6 +12,7 @@
         android:padding="24dp">
 
         <TextView
+            android:id="@+id/profileTitleTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="User Profile"
@@ -37,6 +38,7 @@
             android:textColor="#666" />
 
         <TextView
+            android:id="@+id/currentPasswordHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Current Password (for changes)"
@@ -52,6 +54,7 @@
             android:inputType="textPassword"/>
 
         <TextView
+            android:id="@+id/updateEmailHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Update Email"
@@ -74,13 +77,13 @@
             android:layout_marginTop="8dp"/>
 
         <TextView
+            android:id="@+id/updatePasswordHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Update Password"
             android:textSize="18sp"
             android:textStyle="bold"
             android:layout_marginTop="16dp"/>
-
 
         <EditText
             android:id="@+id/newPasswordEditText"
@@ -97,12 +100,20 @@
             android:layout_marginTop="8dp"/>
 
         <Button
+            android:id="@+id/toggleTextSizeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Toggle Text Size"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="24dp"/>
+
+        <Button
             android:id="@+id/logoutButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Log Out"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="16dp"
             android:backgroundTint="@android:color/holo_red_light"/>
 
     </LinearLayout>

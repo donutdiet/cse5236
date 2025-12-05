@@ -2,7 +2,7 @@ package com.example.myapplication.profile
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,14 +11,18 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.example.myapplication.R
 import com.example.myapplication.auth.LoginActivity
+import com.example.myapplication.viewmodel.SettingsViewModel
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
 class ProfileFragment : Fragment() {
     private val profileFragTag = "ProfileFragment"
+    private val settingsViewModel: SettingsViewModel by activityViewModels()
+    private val originalTextSizes = mutableMapOf<Int, Float>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,15 +31,54 @@ class ProfileFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
 
+        val profileTitleTextView = view.findViewById<TextView>(R.id.profileTitleTextView)
         val emailTextView = view.findViewById<TextView>(R.id.emailTextView)
         val uidTextView = view.findViewById<TextView>(R.id.uidTextView)
+        val currentPasswordHeader = view.findViewById<TextView>(R.id.currentPasswordHeader)
+        val updateEmailHeader = view.findViewById<TextView>(R.id.updateEmailHeader)
+        val updatePasswordHeader = view.findViewById<TextView>(R.id.updatePasswordHeader)
         val newEmailEditText = view.findViewById<EditText>(R.id.newEmailEditText)
         val updateEmailButton = view.findViewById<Button>(R.id.updateEmailButton)
         val currentPasswordEditText = view.findViewById<EditText>(R.id.currentPasswordEditText)
         val newPasswordEditText = view.findViewById<EditText>(R.id.newPasswordEditText)
         val updatePasswordButton = view.findViewById<Button>(R.id.updatePasswordButton)
         val logoutButton = view.findViewById<Button>(R.id.logoutButton)
+        val toggleTextSizeButton = view.findViewById<Button>(R.id.toggleTextSizeButton)
         var isShowingUID = false
+
+        // Group all text-based views together
+        val allTextViews = listOf<TextView>(
+            profileTitleTextView,
+            emailTextView,
+            uidTextView,
+            currentPasswordHeader,
+            updateEmailHeader,
+            updatePasswordHeader,
+            newEmailEditText,
+            currentPasswordEditText,
+            newPasswordEditText,
+            updateEmailButton,
+            updatePasswordButton,
+            logoutButton,
+            toggleTextSizeButton
+        )
+
+        allTextViews.forEach { view ->
+            originalTextSizes[view.id] = view.textSize
+        }
+
+        settingsViewModel.isTextSizeIncreased.observe(viewLifecycleOwner) { isIncreased ->
+            val multiplier: Float
+            if (isIncreased) {
+                multiplier = 1.2f
+            } else {
+                multiplier = 1.0f
+            }
+            allTextViews.forEach { view ->
+                val originalSize = originalTextSizes[view.id] ?: return@forEach
+                view.setTextSize(TypedValue.COMPLEX_UNIT_PX, originalSize * multiplier)
+            }
+        }
 
         val user = FirebaseAuth.getInstance().currentUser
 
@@ -120,6 +163,10 @@ class ProfileFragment : Fragment() {
         } else {
             emailTextView.text = "Not logged in"
             uidTextView.text = ""
+        }
+
+        toggleTextSizeButton.setOnClickListener {
+            settingsViewModel.toggleTextSize()
         }
 
         logoutButton.setOnClickListener {
