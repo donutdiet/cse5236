@@ -13,17 +13,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="36dp"
         android:layout_marginBottom="16dp"/>
 
     <EditText
         android:id="@+id/petNameEditText"
         android:hint="Pet Name"
+        android:inputType="textCapWords"
+        android:imeOptions="actionNext"
+        android:singleLine="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <EditText
         android:id="@+id/petTypeEditText"
         android:hint="Pet Type"
+        android:inputType="textCapWords"
+        android:imeOptions="actionNext"
+        android:singleLine="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
@@ -31,6 +38,8 @@
         android:id="@+id/latitudeEditText"
         android:hint="Enter last seen latitude (-90 to 90)"
         android:inputType="numberDecimal|numberSigned"
+        android:imeOptions="actionNext"
+        android:singleLine="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
@@ -38,12 +47,17 @@
         android:id="@+id/longitudeEditText"
         android:hint="Enter last seen longitude (-180 to 180)"
         android:inputType="numberDecimal|numberSigned"
+        android:imeOptions="actionNext"
+        android:singleLine="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <EditText
         android:id="@+id/contactEditText"
-        android:hint="Contact Info"
+        android:hint="Contact Info (email or phone)"
+        android:inputType="textEmailAddress"
+        android:imeOptions="actionDone"
+        android:singleLine="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
