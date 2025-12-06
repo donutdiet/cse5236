@@ -2,7 +2,6 @@ package com.example.myapplication.map
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.location.Location
@@ -38,12 +37,14 @@ import java.util.Date
 import java.util.Locale
 import kotlin.getValue
 import androidx.core.graphics.scale
+import com.google.android.gms.maps.model.CameraPosition
 
 class MapFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var mapView: MapView
     private var googleMap: GoogleMap? = null
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private var lastCameraPosition: CameraPosition? = null
 
     private val viewModel: ReportsViewModel by viewModels()
 
@@ -127,6 +128,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         googleMap?.uiSettings?.isZoomControlsEnabled = true
         googleMap?.setInfoWindowAdapter(ReportInfoWindowAdapter())
 
+        if (lastCameraPosition != null) {
+            googleMap?.moveCamera(CameraUpdateFactory.newCameraPosition(lastCameraPosition!!))
+        }
+
         enableMyLocation()
 
         viewModel.getAllReports().observe(viewLifecycleOwner) { reports ->
@@ -184,11 +189,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         googleMap?.isMyLocationEnabled = true
 
+        // Always fetch the last location to ensure userLatLng and the circle are set.
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
             if (location != null) {
                 userLatLng = LatLng(location.latitude, location.longitude)
-                googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng!!, 13f))
 
+                // Draw the circle every time we get a location.
+                // You might want to clear old circles in refreshMarkers() if they duplicate.
                 googleMap?.addCircle(
                     CircleOptions()
                         .center(userLatLng!!)
@@ -197,11 +204,24 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                         .fillColor(0x220000FF)
                         .strokeWidth(3f)
                 )
+
+                // Only animate the camera if it hasn't been positioned yet.
+                if (lastCameraPosition == null) {
+                    val cameraPosition = CameraPosition.Builder()
+                        .target(userLatLng!!)
+                        .zoom(13f)
+                        .build()
+                    googleMap?.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+
+                    // Also update the lastCameraPosition so it's not null for the next onResume
+                    lastCameraPosition = cameraPosition
+                }
             } else {
                 Toast.makeText(requireContext(), "Unable to get current location", Toast.LENGTH_SHORT).show()
             }
         }
     }
+
 
     private fun refreshMarkers() {
         googleMap?.clear()
@@ -292,6 +312,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onPause() {
         super.onPause()
+        googleMap?.let {
+            lastCameraPosition = it.cameraPosition
+        }
         mapView.onPause()
         Log.d(mapFragTag, "onPause")
     }

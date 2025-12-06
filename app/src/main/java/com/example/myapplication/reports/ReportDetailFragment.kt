@@ -1,5 +1,6 @@
 package com.example.myapplication.reports
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -59,6 +60,26 @@ class ReportDetailFragment : Fragment() {
                 latitudeEditText.setText(it.lastSeen?.latitude?.toString() ?: "")
                 longitudeEditText.setText(it.lastSeen?.longitude?.toString() ?: "")
                 contactEditText.setText(it.contact)
+
+                if (it.found) {
+                    foundButton.setBackgroundColor(Color.GRAY)
+                    updateButton.setBackgroundColor(Color.GRAY)
+
+                    foundButton.isEnabled = false
+                    updateButton.isEnabled = false
+
+                    petNameEditText.isEnabled = false
+                    petTypeEditText.isEnabled = false
+                    latitudeEditText.isEnabled = false
+                    longitudeEditText.isEnabled = false
+                    contactEditText.isEnabled = false
+
+                    Toast.makeText(
+                        requireContext(),
+                        "Resolved reports are read only. Please create a new report if you have updates.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
         }
 

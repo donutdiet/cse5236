@@ -23,7 +23,7 @@ class ReportsRepository {
                         val report = doc.toObject(Report::class.java)
                         report?.apply { id = doc.id }
                     }
-                    liveData.value = reports.sortedByDescending { it.timestamp }
+                    liveData.value = sortReportsByFoundAndTimestamp(reports)
                 }
             }
         return liveData
@@ -43,7 +43,7 @@ class ReportsRepository {
                         val report = doc.toObject(Report::class.java)
                         report?.apply { id = doc.id }
                     }
-                    liveData.value = reports.sortedByDescending { it.timestamp }
+                    liveData.value = sortReportsByFoundAndTimestamp(reports)
                 }
             }
         return liveData
@@ -112,4 +112,12 @@ class ReportsRepository {
                 onComplete(false)
             }
     }
+
+    private fun sortReportsByFoundAndTimestamp(reports: List<Report>): List<Report> {
+        return reports.sortedWith(
+            compareBy<Report> { report -> report.found }  // false first, true later
+                .thenByDescending { report -> report.timestamp }
+        )
+    }
+
 }

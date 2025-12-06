@@ -1,5 +1,6 @@
 package com.example.myapplication.reports
 
+import android.graphics.Color
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -42,7 +43,11 @@ class AllMyReportsAdapter(
             "(${String.format("%.4f", it.latitude)}, ${String.format("%.4f", it.longitude)})"
         } ?: "Not available"
 
-        holder.titleText.text = "Missing ${report.petType.ifBlank { "Pet" }}: ${report.petName.ifBlank { "Unnamed" }}"
+        val title = buildString {
+            if (report.found) append("✅ Found ")
+            append("Missing ${report.petType.ifBlank { "Pet" }}: ${report.petName.ifBlank { "Unnamed" }}")
+        }
+        holder.titleText.text = title
 
         holder.descriptionText.text = """
             Last Seen: $lastSeenString
@@ -53,6 +58,11 @@ class AllMyReportsAdapter(
         holder.itemView.setOnClickListener {
             onItemClickListener?.invoke(report)
         }
+
+        holder.itemView.setBackgroundColor(
+            if (report.found) Color.parseColor("#CCF6D4") else Color.WHITE
+        )
+
         val itemTextViews = listOf(
             holder.titleText,
             holder.descriptionText
@@ -64,11 +74,10 @@ class AllMyReportsAdapter(
         }
         settingsViewModel.isTextSizeIncreased.observe(lifecycleOwner) { isIncreased ->
 
-            val scaleMultiplier: Float
-            if (isIncreased) {
-                scaleMultiplier = 1.2f
+            val scaleMultiplier: Float = if (isIncreased) {
+                1.2f
             } else {
-                scaleMultiplier = 1.0f
+                1.0f
             }
 
             itemTextViews.forEach { textView ->
